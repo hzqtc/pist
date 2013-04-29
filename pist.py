@@ -235,7 +235,7 @@ def pist_push(gid, files, description = ''):
 
     if r.status_code == requests.codes.ok:
         gist = Gist.from_json_obj(r.json())
-        print 'Gist %s: %s%s' % (gist.gid, '+' * gist.history[0].additions, '-' * gist.history[0].deletions)
+        print 'Gist %s updated: %s%s' % (gist.gid, '+' * gist.history[0].additions, '-' * gist.history[0].deletions)
     else:
         print 'Updating gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
 

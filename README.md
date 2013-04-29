@@ -4,13 +4,18 @@ Pist is a CLI for the [Gist API](https://gits.github.com). Pist implements all A
 
 ## Features
 
-* Github account login
-* List all gists
-* Display detail information and history of gists
-* Create new gists
-* Delete existing gists
-* Download gists, including downloading a particular version
-* Update gists, including remove files from gists
+* Github account login.
+* List user's all gists.
+* Display detail information and history of gists.
+* Create new gists.
+* Delete existing gists.
+* Download gists, including downloading a particular version.
+* Update gists, including remove files from gists.
+
+## Features (which are not bugs)
+
+* Access other user's gists.
+* Create anonymous gists.
 
 ## Dependencies
 
@@ -20,7 +25,7 @@ Pist is written in Python and powered by [Requests](http://python-requests.org/)
 
 ### pist login
 
-* authenticate 
+* user authenticate
 * access token save in ~/.pist
 
 ```
@@ -30,13 +35,11 @@ Password: pwd
 Login successful! Now try "pist list" to see all your gists.
 ```
 
-
 ### pist list
 
 * list all gists
 * public/private, id and file list
 * `+` for public and `-` for private
-* sample output:
 
 ```
 $ pist list
@@ -47,21 +50,23 @@ $ pist list
 
 ### pist info id
 
-* specify gist id 
 * display gist id, url, files, create time, update time, description and history
 * history: version hash, committed at, change set
 
 ```
 $ pist info 1234
 Gist 1234: https://gist.github.com/user/1234
-Files: a.c a.h main.c
-Descript: A test gist for pist dev.
-Create: 2013/4/28 10:10 AM Update: 2013/4/28 16:45 PM
+Description: A test gist for pist dev.
+Created at: 2013/4/28 10:10 AM
+Updated at: 2013/4/28 16:45 PM
+
+[a.c]   1043 bytes
+[a.h]   298 bytes
+[main.c]    10456 bytes
 
 * 34293478925897159 2013/4/28 10:20 AM ++++++---
 * 31295805839758274 2013/4/28 14:04 PM --
 ```
-
 
 ### pist delete [-f] id
 
@@ -70,14 +75,9 @@ Create: 2013/4/28 10:10 AM Update: 2013/4/28 16:45 PM
 
 ```
 $ pist delete 4869
-Gist 4869: https://gist.github.com/user/4869
-Files: mm.py
-Descript: A test gist for pist dev.
-Create: 2013/4/28 10:10 AM Update: 2013/4/28 16:45 PM
-
-Are you sure to delete this gist? (y/N)
+This operation will delete gist 4869, continue? (y/N) y
+Gist deleted.
 ```
-
 
 ### pist create [-p] [-d description] file1 [file2] [file3] …
 
@@ -87,9 +87,7 @@ Are you sure to delete this gist? (y/N)
 ```
 $ pist create -p foo.sh bar.sh
 Private gist 8888 created: https://gist.github.com/user/8888
-Files: foo.sh bar.sh
 ```
-
 
 ### pist pull [-f] [-v version] id
 
@@ -99,17 +97,12 @@ Files: foo.sh bar.sh
 
 ```
 $ pist pull -f 1234
-Gist 1234: https://gist.github.com/user/1234
-Files: a.c a.h main.c
-Descript: A test gist for pist dev.
-Create: 2013/4/28 10:10 AM Update: 2013/4/28 16:45 PM
-
-a.c created
-a.h created
-main.c exists, overwritten (y/N) Y
+[a.c] done
+[a.h] done
+This operation will overwrite main.c, continue? (y/N) Y
+[mian.c] done
 
 ```
-
 
 ### pist push [-d description] id file1 [file2] [file3] …
 
@@ -118,10 +111,5 @@ main.c exists, overwritten (y/N) Y
 
 ```
 $ pist push 1234 a.c main.c a.h
-a.h doesn't exist, it will be removed from this gist. Continue? (y/N)
-
-Gist 1234: https://gist.github.com/user/1234
-Files: a.c a.h main.c
-Descript: A test gist for pist dev.
-Create: 2013/4/28 10:10 AM Update: 2013/4/28 16:45 PM
+Gist 1234 updated: ++++++--
 ```
