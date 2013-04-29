@@ -1,6 +1,6 @@
 # Pist: A Gist Command Line Interface
 
-Pist is a CLI for the [Gist API](https://gits.github.com). Pist implements all APIs for manipulating personal gists.
+Pist is a CLI for the [Gist API](https://gits.github.com). Pist covers all APIs for manipulating personal gists.
 
 ## Features
 
@@ -26,7 +26,7 @@ Pist is written in Python and powered by [Requests](https://github.com/kennethre
 ### pist login
 
 * user authenticate
-* access token save in ~/.pist
+* access token save in `~/.pist_token`
 
 ```
 $ pist login
@@ -60,9 +60,9 @@ Description: A test gist for pist dev.
 Created at: 2013/4/28 10:10 AM
 Updated at: 2013/4/28 16:45 PM
 
-[a.c]   1043 bytes
-[a.h]   298 bytes
-[main.c]    10456 bytes
+a.c   1043 bytes
+a.h   298 bytes
+main.c    10456 bytes
 
 * 34293478925897159 2013/4/28 10:20 AM ++++++---
 * 31295805839758274 2013/4/28 14:04 PM --
@@ -97,10 +97,10 @@ Private gist 8888 created: https://gist.github.com/user/8888
 
 ```
 $ pist pull -f 1234
-[a.c] done
-[a.h] done
+a.c done
+a.h done
 This operation will overwrite main.c, continue? (y/N) Y
-[mian.c] done
+main.c done
 
 ```
 
