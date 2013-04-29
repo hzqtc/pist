@@ -8,7 +8,7 @@ import requests
 import sys
 
 from datetime import datetime
-from clint.textui import puts, indent, colored
+from clint.textui import colored
 
 token_file = os.path.expanduser('~/.pist_token')
 api_root = 'https://api.github.com'
@@ -97,7 +97,7 @@ def pist_login():
     passwd = getpass.getpass()
 
     postdata = {
-        'scope': [
+        'scopes': [
             'gist'
         ],
         'note': 'Pist',
@@ -109,9 +109,9 @@ def pist_login():
     if r.status_code == requests.codes.created:
         token = r.json()['token']
         open(token_file, 'w').write(token)
-        print 'Login successfully! Authorization token has been saved to "%s"' % token_file
+        print 'Login successfully! Now try "pist list" to see all your gists.'
     else:
-        print 'Login failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
+        print colored.red('Login failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
 def pist_list():
     token = pist_gettoken()
@@ -121,9 +121,10 @@ def pist_list():
     if r.status_code == requests.codes.ok:
         for o in r.json():
             gist = Gist.from_json_obj(o)
-            print '[%s] %s: %s' % ('+' if gist.public else '-', gist.gid, ' '.join(map(lambda f: f.filename, gist.files)))
+            print '[%s] %s: %s' % (colored.green('+') if gist.public else colored.red('-')
+                    , colored.blue(gist.gid), ' '.join(map(lambda f: f.filename, gist.files)))
     else:
-        print 'Listing gists failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
+        print colored.red('Listing gists failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
 def pist_info(gid):
     token = pist_gettoken()
@@ -132,13 +133,13 @@ def pist_info(gid):
 
     if r.status_code == requests.codes.ok:
         gist = Gist.from_json_obj(r.json())
-        print 'Gist %s: %s' % (gist.gid, gist.url)
-        print 'Description: %s' % gist.description
-        print 'Created at: %s' % gist.created_time.strftime('%Y/%m/%d %H:%M:%S')
-        print 'Updated at: %s' % gist.updated_time.strftime('%Y/%m/%d %H:%M:%S')
+        print 'Gist %s: %s' % (colored.blue(gist.gid), colored.yellow(gist.url))
+        print 'Description: %s' % colored.yellow(gist.description)
+        print 'Created at: %s' % colored.cyan(gist.created_time.strftime('%Y/%m/%d %H:%M:%S'))
+        print 'Updated at: %s' % colored.cyan(gist.updated_time.strftime('%Y/%m/%d %H:%M:%S'))
         print ''
         for f in gist.files:
-            print '[%s]\t%d bytes' % (f.filename, f.size)
+            print '[%s]\t%d bytes' % (colored.blue(f.filename), f.size)
         print ''
         for h in gist.history:
             a = h.additions
@@ -147,9 +148,10 @@ def pist_info(gid):
             d = h.deletions
             if d > 10:
                 d = 10
-            print '* %s %s %s%s' % (h.version, h.committed_time.strftime('%Y/%m/%d %H:%M:%S'), '+' * a, '-' * d)
+            print '* %s %s %s%s' % (colored.yellow(h.version), colored.cyan(h.committed_time.strftime('%Y/%m/%d %H:%M:%S')),
+                    colored.green('+' * a), colored.red('-' * d))
     else:
-        print 'Getting gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
+        print colored.red('Getting gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
 def pist_delete(gid, force = False):
     if force == False:
@@ -162,9 +164,9 @@ def pist_delete(gid, force = False):
     r = requests.delete(url, headers = {'Authorization': 'token ' + token})
 
     if r.status_code == requests.codes.no_content:
-        print 'Gist deleted.'
+        print 'Gist %s deleted.' % colored.blue(gid)
     else:
-        print 'Delete gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
+        print colored.red('Delete gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
 def pist_create(files, private = False, description = ''):
     token = pist_gettoken()
@@ -178,15 +180,15 @@ def pist_create(files, private = False, description = ''):
         try:
             postdata['files'][f] = { 'content': open(f).read() }
         except IOError as e:
-            print 'Cannot read %s: %s' % (f, e.msg)
+            print colored.red('Cannot read %s: %s' % (f, e.msg))
             return
     r = requests.post(url, data = json.dumps(postdata), headers = {'Authorization': 'token ' + token})
 
     if r.status_code == requests.codes.created:
         gist = Gist.from_json_obj(r.json())
-        print '%s gist %s created: %s' % ('Public' if gist.public else 'Private', gist.gid, gist.url)
+        print '%s gist %s created: %s' % ('Public' if gist.public else 'Private', colored.blue(gist.gid), colored.yellow(gist.url))
     else:
-        print 'Creating gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
+        print colored.red('Creating gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
 
 def pist_pull(gid, force = False, version = ''):
@@ -203,16 +205,16 @@ def pist_pull(gid, force = False, version = ''):
             if os.path.exists(f.filename) and force == False:
                 ans = raw_input('This operation will overwrite %s, continue? (y/N) ' % f.filename).upper()
                 if ans != 'Y':
-                    print '[%s] skipped' % f.filename
+                    print '[%s] skipped' % colored.blue(f.filename)
                     continue
             try:
-                open(f.filename, 'w').write(f.content)
-                print '[%s] done' % f.filename
+                open(f.filename, 'w').write(f.content.encode('utf-8'))
+                print '[%s] done' % colored.green(f.filename)
             except IOError as e:
-                print '[%s] error: %s' % (f.filename, e.msg)
+                print '[%s] error: %s' % (colored.red(f.filename), e.msg)
                 continue
     else:
-        print 'Getting gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
+        print colored.red('Getting gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
 def pist_push(gid, files, description = ''):
     token = pist_gettoken()
@@ -227,7 +229,7 @@ def pist_push(gid, files, description = ''):
             try:
                 postdata['files'][f] = { 'content': open(f).read() }
             except IOError as e:
-                print 'Cannot read %s: %s' % (f, e.msg)
+                print colored.red('Cannot read %s: %s' % (f, e.msg))
                 return
         else:
             postdata['files'][f] = None
@@ -235,9 +237,15 @@ def pist_push(gid, files, description = ''):
 
     if r.status_code == requests.codes.ok:
         gist = Gist.from_json_obj(r.json())
-        print 'Gist %s updated: %s%s' % (gist.gid, '+' * gist.history[0].additions, '-' * gist.history[0].deletions)
+        a = gist.history[0].additions
+        if a > 10:
+            a = 10
+        d = gist.history[0].deletions
+        if d > 10:
+            d = 10
+        print 'Gist %s updated: %s%s' % (colored.blue(gist.gid), colored.green('+' * a), colored.red('-' * d))
     else:
-        print 'Updating gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
+        print colored.red('Updating gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
 def usage():
     print "Pist: A Gist Command Line Interface."
@@ -265,7 +273,7 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[2:], 'pd:fv:', ['private', 'description=', 'force', 'version='])
     except getopt.GetoptError as err:
-        print str(err)
+        print colored.red('Syntax error: %s.' % str(err))
         usage()
         sys.exit(2)
 
@@ -288,7 +296,7 @@ if __name__ == '__main__':
         if args:
             gid = args[0]
         else:
-            print 'Gist id cannot be empty'
+            print colored.red('Syntax error: gist id cannot be empty.')
             usage()
             sys.exit(2)
 
@@ -296,7 +304,7 @@ if __name__ == '__main__':
         if args:
             files = args
         else:
-            print 'File list cannot be empty!'
+            print colored.red('Syntax error: file list cannot be empty.')
             usage()
             sys.exit(2)
 
