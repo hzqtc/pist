@@ -96,8 +96,15 @@ def pist_login():
     user = raw_input('Github account: ')
     passwd = getpass.getpass()
 
+    postdata = {
+        'scope': [
+            'gist'
+        ],
+        'note': 'Pist',
+        'note_url': 'https://github.com/hzqtc/pist'
+    }
     url = '%s/%s' % (api_root, 'authorizations')
-    r = requests.post(url, data = '{"scopes":["gist"]}', auth=(user, passwd))
+    r = requests.post(url, data = json.dumps(postdata), auth=(user, passwd))
 
     if r.status_code == requests.codes.created:
         token = r.json()['token']
