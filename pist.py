@@ -121,7 +121,7 @@ def pist_list():
     if r.status_code == requests.codes.ok:
         for o in r.json():
             gist = Gist.from_json_obj(o)
-            print '[%s] %s: %s' % (colored.green('+') if gist.public else colored.red('-')
+            print '%s %s: %s' % (colored.green('+') if gist.public else colored.red('-')
                     , colored.blue(gist.gid), ' '.join(map(lambda f: f.filename, gist.files)))
     else:
         print colored.red('Listing gists failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
@@ -139,7 +139,7 @@ def pist_info(gid):
         print 'Updated at: %s' % colored.cyan(gist.updated_time.strftime('%Y/%m/%d %H:%M:%S'))
         print ''
         for f in gist.files:
-            print '[%s]\t%d bytes' % (colored.blue(f.filename), f.size)
+            print '%s\t%d bytes' % (colored.blue(f.filename), f.size)
         print ''
         for h in gist.history:
             a = h.additions
@@ -205,13 +205,13 @@ def pist_pull(gid, force = False, version = ''):
             if os.path.exists(f.filename) and force == False:
                 ans = raw_input('This operation will overwrite %s, continue? (y/N) ' % f.filename).upper()
                 if ans != 'Y':
-                    print '[%s] skipped' % colored.blue(f.filename)
+                    print '%s skipped' % colored.blue(f.filename)
                     continue
             try:
                 open(f.filename, 'w').write(f.content.encode('utf-8'))
-                print '[%s] done' % colored.green(f.filename)
+                print '%s done' % colored.green(f.filename)
             except IOError as e:
-                print '[%s] error: %s' % (colored.red(f.filename), e.msg)
+                print '%s error: %s' % (colored.red(f.filename), e.msg)
                 continue
     else:
         print colored.red('Getting gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
