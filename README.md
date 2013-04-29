@@ -14,12 +14,12 @@ Pist is a CLI for the [Gist API](https://gits.github.com). Pist implements all A
 
 ## Features (which are not bugs)
 
-* Access other user's gists.
-* Create anonymous gists.
+* **Can't** access other user's gists.
+* **Can't** create anonymous gists.
 
 ## Dependencies
 
-Pist is written in Python and powered by [Requests](http://python-requests.org/).
+Pist is written in Python and powered by [Requests](https://github.com/kennethreitz/requests) and [Clint](https://github.com/kennethreitz/clint).
 
 ## Usage
 
@@ -113,3 +113,7 @@ This operation will overwrite main.c, continue? (y/N) Y
 $ pist push 1234 a.c main.c a.h
 Gist 1234 updated: ++++++--
 ```
+
+## Contribution
+
+Be my guest.
