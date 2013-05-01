@@ -5,12 +5,12 @@ Pist is a CLI for the [Gist API](https://gits.github.com). Pist covers all APIs 
 ## Features
 
 * Github account login.
-* List user's all gists.
-* Display detail information and history of gists.
+* List authorized user's all gists.
+* Display detail information and version history of gists.
 * Create new gists.
 * Delete existing gists.
 * Download gists, including downloading a particular version.
-* Update gists, including remove files from gists.
+* Upload gists.
 
 ## Features (which are not bugs)
 
@@ -101,7 +101,6 @@ a.c done
 a.h done
 This operation will overwrite main.c, continue? (y/N) Y
 main.c done
-
 ```
 
 ### pist push [-d description] id file1 [file2] [file3] …
