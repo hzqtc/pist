@@ -143,14 +143,15 @@ def pist_info(gid):
             print '%s\t%d bytes' % (colored.blue(f.filename), f.size)
         print ''
         for h in gist.history:
+            changed = h.additions + h.deletions
             a = h.additions
             if a > show_max_changed_lines:
                 a = show_max_changed_lines
             d = h.deletions
             if d > show_max_changed_lines:
                 d = show_max_changed_lines
-            print '* %s %s %s%s' % (colored.yellow(h.version), colored.cyan(h.committed_time.strftime('%Y/%m/%d %H:%M:%S')),
-                    colored.green('+' * a), colored.red('-' * d))
+            print '* %s %s | %2d %s%s' % (colored.yellow(h.version), colored.cyan(h.committed_time.strftime('%Y/%m/%d %H:%M:%S')),
+                    changed, colored.green('+' * a), colored.red('-' * d))
     else:
         print colored.red('Getting gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
@@ -238,13 +239,7 @@ def pist_push(gid, files, description = ''):
 
     if r.status_code == requests.codes.ok:
         gist = Gist.from_json_obj(r.json())
-        a = gist.history[0].additions
-        if a > show_max_changed_lines:
-            a = show_max_changed_lines
-        d = gist.history[0].deletions
-        if d > show_max_changed_lines:
-            d = show_max_changed_lines
-        print 'Gist %s updated: %s%s' % (colored.blue(gist.gid), colored.green('+' * a), colored.red('-' * d))
+        print 'Gist %s updated: %d insertions(+), %d deletions(-)' % (colored.blue(gist.gid), gist.history[0].additions, gist.history[0].deletions)
     else:
         print colored.red('Updating gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
 
