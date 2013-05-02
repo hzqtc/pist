@@ -256,7 +256,7 @@ def usage():
     print '  pist pull [-f] [-v version] <id>           Download files of a gist to the working directory.'
     print '    -f, --force                              Force overwrite local file.'
     print '    -v, --version=STRING                     Download a specified version instead of the latest.'
-    print '  pist push [-d description] <files>         Upload local files and overwriten corresponding remote files.'
+    print '  pist push [-d description] <id> <files>    Upload local files and overwriten corresponding remote files.'
     print '    -d, --description=STRING                 Edit gist description.'
 
 if __name__ == '__main__':
