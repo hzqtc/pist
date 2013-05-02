@@ -211,9 +211,9 @@ def pist_pull(gid, force = False, version = ''):
                     continue
             try:
                 open(f.filename, 'w').write(f.content.encode('utf-8'))
-                print '%s done' % colored.green(f.filename)
+                print '%s downloaded' % colored.green(f.filename)
             except IOError as e:
-                print '%s error: %s' % (colored.red(f.filename), e.msg)
+                print colored.red('Cannot write %s: %s' % (f.filename, e.msg))
                 continue
     else:
         print colored.red('Getting gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
@@ -229,11 +229,13 @@ def pist_push(gid, files, description = ''):
     for f in files:
         if os.path.exists(f):
             try:
+                print 'Preapring to upload %s' % f
                 postdata['files'][f] = { 'content': open(f).read() }
             except IOError as e:
                 print colored.red('Cannot read %s: %s' % (f, e.msg))
                 return
         else:
+            print '%s will be delete from gist' % f
             postdata['files'][f] = None
     r = requests.patch(url, data = json.dumps(postdata), headers = {'Authorization': 'token ' + token})
 
@@ -296,10 +298,12 @@ if __name__ == '__main__':
             usage()
             sys.exit(2)
 
+    file_list_start = 0
+    if cmd == 'push':
+        file_list_start = 1
     if cmd in ('create', 'push'):
-        if args:
-            files = args
-        else:
+        files = args[file_list_start:]
+        if not files:
             print colored.red('Syntax error: file list cannot be empty.')
             usage()
             sys.exit(2)
