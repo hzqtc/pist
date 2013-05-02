@@ -12,6 +12,7 @@ from clint.textui import colored
 
 token_file = os.path.expanduser('~/.pist_token')
 api_root = 'https://api.github.com'
+show_max_changed_lines = 10
 
 class GistFile(object):
 
@@ -143,11 +144,11 @@ def pist_info(gid):
         print ''
         for h in gist.history:
             a = h.additions
-            if a > 10:
-                a = 10
+            if a > show_max_changed_lines:
+                a = show_max_changed_lines
             d = h.deletions
-            if d > 10:
-                d = 10
+            if d > show_max_changed_lines:
+                d = show_max_changed_lines
             print '* %s %s %s%s' % (colored.yellow(h.version), colored.cyan(h.committed_time.strftime('%Y/%m/%d %H:%M:%S')),
                     colored.green('+' * a), colored.red('-' * d))
     else:
@@ -238,11 +239,11 @@ def pist_push(gid, files, description = ''):
     if r.status_code == requests.codes.ok:
         gist = Gist.from_json_obj(r.json())
         a = gist.history[0].additions
-        if a > 10:
-            a = 10
+        if a > show_max_changed_lines:
+            a = show_max_changed_lines
         d = gist.history[0].deletions
-        if d > 10:
-            d = 10
+        if d > show_max_changed_lines:
+            d = show_max_changed_lines
         print 'Gist %s updated: %s%s' % (colored.blue(gist.gid), colored.green('+' * a), colored.red('-' * d))
     else:
         print colored.red('Updating gist failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message']))
