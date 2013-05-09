@@ -1,6 +1,7 @@
 # Pist: A Gist Command Line Interface
 
-Pist is a CLI for the [Gist API](https://gits.github.com). Pist covers all APIs for manipulating personal gists.
+Pist is a CLI for the [Gist API](https://gits.github.com). You can easily
+access, create and update your gists from the command line.
 
 ## Features
 
@@ -11,6 +12,7 @@ Pist is a CLI for the [Gist API](https://gits.github.com). Pist covers all APIs 
 * Delete existing gists.
 * Download gists, including downloading a particular version.
 * Upload gists.
+* Remove files from gists (see `gist push`).
 
 ## Features (which are not bugs)
 
@@ -19,7 +21,8 @@ Pist is a CLI for the [Gist API](https://gits.github.com). Pist covers all APIs 
 
 ## Dependencies
 
-Pist is written in Python and powered by [Requests](https://github.com/kennethreitz/requests) and [Clint](https://github.com/kennethreitz/clint).
+Pist is written in Python and it is powered by
+[Requests](https://github.com/kennethreitz/requests).
 
 ## Usage
 
@@ -50,7 +53,7 @@ $ pist list
 
 ### pist info id
 
-* display gist id, url, files, create time, update time, description and history
+* display detail gist information
 * history: version hash, committed at, change set
 
 ```
@@ -79,7 +82,7 @@ This operation will delete gist 4869, continue? (y/N) y
 Gist deleted.
 ```
 
-### pist create [-p] [-d description] file1 [file2] [file3] …
+### pist create [-p] [-d description] file1 [file2] [file3] ...
 
 * create a new gist with files
 * default to public
@@ -103,7 +106,7 @@ This operation will overwrite main.c, continue? (y/N) Y
 main.c done
 ```
 
-### pist push [-d description] id file1 [file2] [file3] …
+### pist push [-d description] id file1 [file2] [file3] ...
 
 * push local files to gist specified with id
 * if a file specified but doesn't exist locally, it will be removed from the gist
