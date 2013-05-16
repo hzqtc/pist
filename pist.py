@@ -229,7 +229,7 @@ def pist_push(gid, files, description = ''):
         if os.path.exists(f):
             try:
                 fname = f.split(os.sep)[-1]
-                print 'Preapring to upload %s' % f
+                print 'Preparing to upload %s' % f
                 postdata['files'][fname] = { 'content': open(f).read() }
             except IOError as e:
                 print 'Cannot read %s: %s' % (f, e.msg)
