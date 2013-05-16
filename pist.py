@@ -121,8 +121,9 @@ def pist_list():
     if r.status_code == requests.codes.ok:
         for o in r.json():
             gist = Gist.from_json_obj(o)
-            print '%s %s: %s' % ('+' if gist.public else '-'
-                    , gist.gid, ' '.join(map(lambda f: f.filename, gist.files)))
+            print '%s %s: %s\n  %s' % ('+' if gist.public else '-'
+                    , gist.gid, ' '.join(map(lambda f: f.filename, gist.files))
+                    , gist.url)
     else:
         print 'Listing gists failed! HTTP status code: %d, message: %s' % (r.status_code, r.json()['message'])
 
