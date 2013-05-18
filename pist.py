@@ -180,7 +180,9 @@ def pist_create(files, private = False, description = ''):
     }
     for f in files:
         try:
-            postdata['files'][f] = { 'content': open(f).read() }
+            fname = f.split(os.sep)[-1]
+            print 'Preparing to upload %s' % f
+            postdata['files'][fname] = { 'content': open(f).read() }
         except IOError as e:
             print 'Cannot read %s: %s' % (f, e.msg)
             return
