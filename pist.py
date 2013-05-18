@@ -8,6 +8,7 @@ import requests
 import sys
 
 from datetime import datetime
+from dateutil.tz import tzlocal, tzutc
 
 token_file = os.path.expanduser('~/.pist_token')
 api_root = 'https://api.github.com'
@@ -87,7 +88,9 @@ class Gist(object):
         return g
 
 def parse_api_time(tstr):
-    return datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%SZ')
+    dt = datetime.strptime(tstr, '%Y-%m-%dT%H:%M:%SZ')
+    dt = dt.replace(tzinfo = tzutc())
+    return dt.astimezone(tzlocal())
 
 def pist_gettoken():
     return open(token_file).read()
