@@ -30,6 +30,7 @@ Pist is written in Python and it is powered by
 
 * user authenticate
 * access token save in `~/.pist_token`
+* revoke access anytime at <https://github.com/settings/applications>
 
 ```
 $ pist login
@@ -40,21 +41,24 @@ Login successful! Now try "pist list" to see all your gists.
 
 ### pist list
 
-* list all gists
-* public/private, id and file list
+* list all your gists, both public and private
+* public/private, id, files and URL
 * `+` for public and `-` for private
 
 ```
 $ pist list
 + 1234 a.c a.h main.c
+  https://gist.github.com/1234
 + 4869 mm.py
+  https://gist.github.com/4869
 - 3489 test.md
+  https://gist.github.com/3489
 ```
 
 ### pist info id
 
-* display detail gist information
-* history: version hash, committed at, change set
+* display detail information of a gist
+* history: version hash, committed time and changeset
 
 ```
 $ pist info 1234
@@ -67,14 +71,14 @@ a.c   1043 bytes
 a.h   298 bytes
 main.c    10456 bytes
 
-* 34293478925897159 2013/4/28 10:20 AM ++++++---
-* 31295805839758274 2013/4/28 14:04 PM --
+* 34293478925897159 2013/4/28 10:20 AM 11 ++++++-----
+* 31295805839758274 2013/4/28 14:04 PM  2 --
 ```
 
 ### pist delete [-f] id
 
 * delete gist with specified id
-* confirm before delete
+* confirm before delete unless `-f` is specified
 
 ```
 $ pist delete 4869
@@ -85,7 +89,7 @@ Gist deleted.
 ### pist create [-p] [-d description] file1 [file2] [file3] ...
 
 * create a new gist with files
-* default to public
+* new gist will be public unless `-p` is specified
 
 ```
 $ pist create -p foo.sh bar.sh
@@ -94,9 +98,9 @@ Private gist 8888 created: https://gist.github.com/user/8888
 
 ### pist pull [-f] [-v version] id
 
-* optional specify version hash
 * pull all gist files into working directory
-* ask if file exists, use -f to force overwrite without asking
+* ask if file exists, use `-f` to force overwrite without asking
+* download a particular version with `-v`
 
 ```
 $ pist pull -f 1234
@@ -108,8 +112,8 @@ main.c done
 
 ### pist push [-d description] id file1 [file2] [file3] ...
 
-* push local files to gist specified with id
-* if a file specified but doesn't exist locally, it will be removed from the gist
+* upload local files to a gist
+* if a file specified doesn't exist locally, it will be removed from the gist
 
 ```
 $ pist push 1234 a.c main.c a.h
